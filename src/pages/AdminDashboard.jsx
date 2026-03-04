@@ -13,8 +13,8 @@ export default function AdminDashboard({ user, onNavigate }){
   async function fetchStats(){
     try{
       const [usersRes, productsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/users'),
-        fetch('http://localhost:5000/api/products')
+        fetch('https://ecom-group.onrender.com/api/users'),
+        fetch('https://ecom-group.onrender.com/api/products')
       ])
       
       const users = await usersRes.json()

@@ -14,7 +14,7 @@ export default function ProductManagement({ currentUser, onNavigate }){
     setLoading(true)
     setError('')
     try{
-      const res = await fetch('http://localhost:5000/api/products')
+      const res = await fetch('https://ecom-group.onrender.com/api/products')
       if(!res.ok) throw new Error('Failed to fetch products')
       const allProducts = await res.json()
       const producerName = currentUser?.name || currentUser?.email
@@ -46,7 +46,7 @@ export default function ProductManagement({ currentUser, onNavigate }){
     if(!editingId) return
     setError('')
     try{
-      const res = await fetch(`http://localhost:5000/api/products/${editingId}`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/products/${editingId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export default function ProductManagement({ currentUser, onNavigate }){
     if(!window.confirm(t('confirmDelete'))) return
     setError('')
     try{
-      const res = await fetch(`http://localhost:5000/api/products/${productId}`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/products/${productId}`, {
         method: 'DELETE',
         headers: {
           'X-User-Role': currentUser?.role || 'guest',

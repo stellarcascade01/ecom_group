@@ -119,7 +119,7 @@ function ProductDetail({ product, products = [], onViewProduct, onNavigate, curr
     async function load(){
       if(!product?.id) return
       try{
-        const res = await fetch(`http://localhost:5000/api/products/${product.id}`)
+        const res = await fetch(`https://ecom-group.onrender.com/api/products/${product.id}`)
         if(!res.ok) throw new Error('Failed to load product details')
         const json = await res.json()
         if(active) setFull({ ...product, ...json, id: json.id || json._id || product.id })
@@ -148,7 +148,7 @@ function ProductDetail({ product, products = [], onViewProduct, onNavigate, curr
     try{
       if(!form.rating) throw new Error(t('selectStarRating'))
       const reviewerName = (currentUser?.name || currentUser?.email || t('anonymous') || 'Anonymous')
-      const res = await fetch(`http://localhost:5000/api/products/${product.id}/reviews`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/products/${product.id}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -354,7 +354,7 @@ function App(){
       setError(null)
       try{
         const [pRes] = await Promise.all([
-          fetch('http://localhost:5000/api/products')
+          fetch('https://ecom-group.onrender.com/api/products')
         ])
         if(!pRes.ok) throw new Error('Failed to load products')
         const pJson = await pRes.json()

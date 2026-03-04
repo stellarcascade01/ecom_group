@@ -26,7 +26,7 @@ export default function Signup({ onSuccess }){
 
     setLoading(true)
     try{
-      const res = await fetch('http://localhost:5000/api/users',{
+      const res = await fetch('https://ecom-group.onrender.com/api/users',{
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ name, email, phone, password, role })
       })

@@ -144,7 +144,7 @@ export default function Checkout({ currentUser }) {
     setSubmitError('')
     
     try{
-      const res = await fetch('http://localhost:5000/api/orders',{
+      const res = await fetch('https://ecom-group.onrender.com/api/orders',{
         method:'POST',
         headers:{ 'Content-Type':'application/json' },
         body: JSON.stringify(payload)
@@ -183,7 +183,7 @@ export default function Checkout({ currentUser }) {
 
     try {
       if (orderId) {
-        const res = await fetch(`http://localhost:5000/api/orders/${orderId}/payment`, {
+        const res = await fetch(`https://ecom-group.onrender.com/api/orders/${orderId}/payment`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ paymentMethod: method, paymentStatus: 'completed' })

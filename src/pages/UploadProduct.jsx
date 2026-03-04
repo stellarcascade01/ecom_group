@@ -41,7 +41,7 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
       form.append('producer', currentUser?.name || currentUser?.email || 'Producer')
       if(imageFile) form.append('image', imageFile)
 
-      const res = await fetch('http://localhost:5000/api/products', {
+      const res = await fetch('https://ecom-group.onrender.com/api/products', {
         method: 'POST',
         headers: {
           'X-User-Role': currentUser?.role || 'guest',

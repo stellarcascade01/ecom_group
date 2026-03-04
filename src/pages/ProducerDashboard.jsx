@@ -41,7 +41,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
     let active = true
     async function load(){
       try{
-        const res = await fetch('http://localhost:5000/api/products')
+        const res = await fetch('https://ecom-group.onrender.com/api/products')
         if(!res.ok) throw new Error('Failed to load products')
         const data = await res.json()
         if(!active) return
@@ -66,7 +66,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
     setUpdatingItemKey(key)
     setOrdersError('')
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${orderId}/items/${productId}/${action}`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/orders/${orderId}/items/${productId}/${action}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
       setOrdersLoading(true)
       setOrdersError('')
       try{
-        const res = await fetch(`http://localhost:5000/api/orders/producer/${encodeURIComponent(producerName)}`)
+        const res = await fetch(`https://ecom-group.onrender.com/api/orders/producer/${encodeURIComponent(producerName)}`)
         if(!res.ok) throw new Error('Failed to load orders')
         const data = await res.json()
         if(!active) return
@@ -170,7 +170,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
     if (!profileForm.name.trim()) { setProfileError('Name is required'); return }
     setSavingProfile(true)
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${userId}/profile`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'X-User-Role': user?.role || 'guest' },
         body: JSON.stringify(profileForm)
@@ -212,7 +212,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
     if(!userId){ setAvatarError('Missing user id for update'); return }
     setSavingAvatar(true)
     try{
-      const res = await fetch(`http://localhost:5000/api/users/${userId}/avatar`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/avatar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'X-User-Role': user?.role || 'guest' },
         body: JSON.stringify({ avatar: value })

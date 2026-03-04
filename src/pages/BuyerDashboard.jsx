@@ -32,7 +32,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
     setOrdersError('')
     setLoadingOrders(true)
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/customer/${userId}`)
+      const res = await fetch(`https://ecom-group.onrender.com/api/orders/customer/${userId}`)
       const data = await res.json()
       if (!res.ok) throw new Error(data?.message || t('failedToFetchOrders'))
       setOrders(Array.isArray(data) ? data : [])
@@ -65,7 +65,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
     }
     setSavingAddr(true)
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${userId}/addresses`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/addresses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
     setSavingAddr(true)
     try {
       const addr = addresses.find(a => a._id === addrId)
-      const res = await fetch(`http://localhost:5000/api/users/${userId}/addresses/${addrId}`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/addresses/${addrId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
     if (!window.confirm(t('buyerDash.deleteAddressConfirm'))) return
     setSavingAddr(true)
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${userId}/addresses/${addrId}`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/addresses/${addrId}`, {
         method: 'DELETE',
         headers: {
           'X-User-Role': user?.role || 'guest'

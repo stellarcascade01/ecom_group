@@ -45,7 +45,7 @@ export default function ProducerShop({ producerName, products = [], onViewProduc
     const controller = new AbortController()
     const loadProducerUser = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/users', { signal: controller.signal })
+        const res = await fetch('https://ecom-group.onrender.com/api/users', { signal: controller.signal })
         if (!res.ok) return
         const users = await res.json()
         const match = (Array.isArray(users) ? users : []).find(u => {

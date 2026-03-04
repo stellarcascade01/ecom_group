@@ -13,7 +13,7 @@ export default function ProducersManagement({ currentUser, onNavigate }){
     setLoading(true)
     setError('')
     try{
-      const res = await fetch('http://localhost:5000/api/users')
+      const res = await fetch('https://ecom-group.onrender.com/api/users')
       if(!res.ok) throw new Error(t('failedToFetchUsers'))
       const allUsers = await res.json()
       const producersList = allUsers.filter(u => u.role === 'producer')
@@ -46,7 +46,7 @@ export default function ProducersManagement({ currentUser, onNavigate }){
     setError('')
     setSavingId(producer._id)
     try{
-      const res = await fetch(`http://localhost:5000/api/users/${producer._id}/blocked`, {
+      const res = await fetch(`https://ecom-group.onrender.com/api/users/${producer._id}/blocked`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
