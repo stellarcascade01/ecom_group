@@ -1,0 +1,96 @@
+import React from 'react'
+import { useCart } from '../cart/useCart'
+import Button from './Button'
+import CartIcon from './icons/CartIcon'
+import HeartIcon from './icons/HeartIcon'
+import StarRating from './StarRating'
+import { useFavorites } from '../favorites/useFavorites'
+
+function PlaceholderImage({title}){
+  const initials = title.split(' ').slice(0,2).map(s=>s[0]).join('').toUpperCase()
+  return (
+    <div className="placeholder-image" aria-hidden>
+      {initials}
+    </div>
+  )
+}
+
+export default function ProductCard({product, onView, currentUser, showReviews = true}){
+  const { addItem } = useCart()
+  const { isFavorite, toggle } = useFavorites()
+  const effectiveUser = currentUser ?? (() => {
+    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
+  })()
+  const isBuyer = (effectiveUser?.role || '').toLowerCase() === 'buyer'
+  const canShop = isBuyer || !effectiveUser
+
+  const getImageUrl = (image) => {
+    if (!image) return null
+    if (image.startsWith('http')) return image
+    return `http://localhost:5000${image}`
+  }
+
+  return (
+    <div
+      className="product-card"
+      role="button"
+      tabIndex={0}
+      onClick={()=> onView && onView(product)}
+      onKeyDown={(e)=>{
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault()
+          onView && onView(product)
+        }
+      }}
+    >
+      {product.image ? (
+        <img 
+          src={getImageUrl(product.image)} 
+          alt={product.name}
+          onError={(e) => {
+            e.target.style.display = 'none'
+            e.target.parentElement?.appendChild(PlaceholderImage({title: product.name}))
+          }}
+        />
+      ) : (
+        <PlaceholderImage title={product.name} />
+      )}
+      <div className="product-body">
+        <h4>{product.name}</h4>
+        <p className="muted">{product.producer}</p>
+        {showReviews && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
+            <StarRating value={Number(product.ratingAvg || 0)} readOnly size={16} />
+            <span className="muted" style={{ fontSize: '0.9rem' }}>
+              ({Number(product.ratingCount || 0)})
+            </span>
+          </div>
+        )}
+        <div className="meta">
+          <strong>৳ {product.price}</strong>
+          <div>
+            {canShop && (
+              <>
+                <button
+                  className={`icon-btn ${isFavorite(product.id) ? 'fav-active' : ''}`}
+                  aria-label={isFavorite(product.id) ? 'Remove from favorites' : 'Add to favorites'}
+                  onClick={(e)=>{ e.stopPropagation(); toggle(product.id) }}
+                >
+                  <HeartIcon size={18} filled={isFavorite(product.id)} />
+                </button>
+                <Button
+                  size="sm"
+                  onClick={(e)=>{ e.stopPropagation(); addItem(product, 1) }}
+                  style={{marginLeft:8}}
+                  aria-label="Add to cart"
+                >
+                  <CartIcon size={16} style={{ marginRight: 6, verticalAlign: 'text-bottom' }} />
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
