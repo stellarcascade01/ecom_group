@@ -310,6 +310,7 @@ export const STRINGS = {
   mobileMoney: 'Mobile Money (MFS)',
   mfsDesc: 'bKash, Nagad, or Rocket',
   processingPayment: 'Processing your payment...',
+  orderConfirmation: 'Order Confirmation',
   orderPlacedSuccess: 'Thank you! Your order has been placed.',
   paymentMethod: 'Payment method:',
   noItemsInCart: 'No items in cart.',

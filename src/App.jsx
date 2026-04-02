@@ -546,7 +546,7 @@ function App(){
             )
           )}
           {page === 'checkout' && (
-            <Checkout currentUser={currentUser} />
+            <Checkout currentUser={currentUser} onNavigate={navigate} />
           )}
           {page === 'favorites' && (
             !currentUser ? <div className="page"><p>Please log in to view favorites.</p></div> :

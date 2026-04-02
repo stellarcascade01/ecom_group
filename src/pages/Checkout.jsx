@@ -4,7 +4,7 @@ import Button from '../components/Button'
 import { t } from '../utils/strings'
 import { apiUrl } from '../utils/api'
 
-export default function Checkout({ currentUser }) {
+export default function Checkout({ currentUser, onNavigate }) {
   const { items, total, clear } = useCart()
   const { storageAvailable } = useCart()
 
@@ -29,6 +29,26 @@ export default function Checkout({ currentUser }) {
   const [submitError, setSubmitError] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('')
   const [processingPayment, setProcessingPayment] = useState(false)
+
+  const orderNumber = useMemo(() => {
+    const created = lastOrder?.createdAt ? new Date(lastOrder.createdAt).getTime() : Date.now()
+    return `#SS-${String(created).slice(-9)}`
+  }, [lastOrder?.createdAt])
+
+  const onTrackOrder = () => {
+    if (!onNavigate) return
+    const role = String(currentUser?.role || '').toLowerCase()
+    if (role === 'buyer') {
+      onNavigate('buyer-dashboard', { open: 'orders' })
+      return
+    }
+    onNavigate('login')
+  }
+
+  const onContinueShopping = () => {
+    if (!onNavigate) return
+    onNavigate('home')
+  }
 
   // Auto-populate form with default address on mount
   useEffect(() => {
@@ -202,6 +222,82 @@ export default function Checkout({ currentUser }) {
       setProcessingPayment(false)
       clear()
     }, 2000)
+  }
+
+  if (placed && paymentMethod) {
+    return (
+      <main className="page checkout-page order-confirm-page">
+        <div className="order-confirm-breadcrumb">
+          <button type="button" className="linklike" onClick={onContinueShopping} disabled={!onNavigate}>
+            {t('nav.home')}
+          </button>
+          <span aria-hidden>›</span>
+          <span>{t('orderConfirmation')}</span>
+        </div>
+
+        <section className="order-confirm-card" aria-label="Order confirmation">
+          <div className="order-confirm-grid">
+            <div className="order-confirm-content">
+              <div className="order-confirm-icon" aria-hidden>
+                ✓
+              </div>
+
+              <h1 className="order-confirm-title">Thank You</h1>
+              <p className="order-confirm-subtitle">
+                for shopping with <strong>{t('brand')}</strong>!
+              </p>
+
+              <p className="order-confirm-note">{t('orderPlacedSuccess')}</p>
+
+              <div className="order-confirm-order-number">
+                <span className="order-confirm-order-label">Order Number:</span>
+                <span className="order-confirm-order-value">{orderNumber}</span>
+              </div>
+
+              <div className="order-confirm-message">
+                <span className="order-confirm-message-icon" aria-hidden>📧</span>
+                <span>You will receive an email confirmation shortly.</span>
+              </div>
+
+              <div className="order-confirm-actions">
+                <Button size="md" onClick={onTrackOrder}>
+                  Track My Order
+                </Button>
+                <Button size="md" variant="outline" onClick={onContinueShopping}>
+                  {t('continueShopping')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="order-confirm-features" aria-label="Benefits">
+          <div className="order-confirm-feature">
+            <div className="order-confirm-feature-icon" aria-hidden>🚚</div>
+            <div>
+              <div className="order-confirm-feature-title">Free Shipping</div>
+              <div className="order-confirm-feature-subtitle">On Orders Over $50</div>
+            </div>
+          </div>
+          <div className="order-confirm-feature">
+            <div className="order-confirm-feature-icon" aria-hidden>🛡️</div>
+            <div>
+              <div className="order-confirm-feature-title">Secure Payment</div>
+              <div className="order-confirm-feature-subtitle">100% Safe & Protected</div>
+            </div>
+          </div>
+          <div className="order-confirm-feature">
+            <div className="order-confirm-feature-icon" aria-hidden>⏱️</div>
+            <div>
+              <div className="order-confirm-feature-title">Fast Delivery</div>
+              <div className="order-confirm-feature-subtitle">2 - 5 Business Days</div>
+            </div>
+          </div>
+        </section>
+
+        <h2 className="order-confirm-more">Explore More Categories</h2>
+      </main>
+    )
   }
 
   return (

@@ -16,6 +16,25 @@ cd backend
 npm install
 ```
 
+## Migrating older `/uploads/*` product images
+
+If you have older products in MongoDB whose `image` field is `/uploads/<filename>`, those images will only work on the one server that still has the file on disk.
+
+If you still have the image files locally in `backend/uploads/`, you can migrate them to Cloudinary and update MongoDB:
+
+```bash
+cd backend
+
+# Dry-run (no uploads, no DB writes)
+npm run migrate:cloudinary
+
+# Apply migration (uploads + DB updates)
+npm run migrate:cloudinary -- --apply
+
+# Optional: delete local files after successful upload
+npm run migrate:cloudinary -- --apply --delete-local
+```
+
 3. Run the development server:
 
 ```bash
