@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react'
 import { useCart } from '../cart/useCart'
 import Button from '../components/Button'
 import { t } from '../utils/strings'
+import { apiUrl } from '../utils/api'
 
 export default function Checkout({ currentUser }) {
   const { items, total, clear } = useCart()
@@ -144,7 +145,7 @@ export default function Checkout({ currentUser }) {
     setSubmitError('')
     
     try{
-      const res = await fetch('https://ecom-group.onrender.com/api/orders',{
+      const res = await fetch(apiUrl('/api/orders'),{
         method:'POST',
         headers:{ 'Content-Type':'application/json' },
         body: JSON.stringify(payload)
@@ -183,7 +184,7 @@ export default function Checkout({ currentUser }) {
 
     try {
       if (orderId) {
-        const res = await fetch(`https://ecom-group.onrender.com/api/orders/${orderId}/payment`, {
+        const res = await fetch(apiUrl(`/api/orders/${orderId}/payment`), {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ paymentMethod: method, paymentStatus: 'completed' })
@@ -519,10 +520,10 @@ export default function Checkout({ currentUser }) {
         }
 
         .payment-option:hover:not(:disabled) {
-          border-color: #1eaecb;
-          background: #f0fdff;
+          border-color: var(--link);
+          background: var(--hero-start);
           transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(30, 174, 203, 0.15);
+          box-shadow: 0 8px 20px rgba(234, 88, 12, 0.15);
         }
 
         .payment-option:disabled {
@@ -554,7 +555,7 @@ export default function Checkout({ currentUser }) {
         .processing-message {
           text-align: center;
           padding: 1.5rem;
-          background: #e9fbff;
+          background: var(--hero-start);
           border-radius: 10px;
           display: flex;
           flex-direction: column;
@@ -566,7 +567,7 @@ export default function Checkout({ currentUser }) {
           width: 40px;
           height: 40px;
           border: 4px solid #e0e0e0;
-          border-top: 4px solid #1eaecb;
+          border-top: 4px solid var(--link);
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
@@ -603,8 +604,8 @@ export default function Checkout({ currentUser }) {
         }
 
         .checkout-success {
-          background: #e9fbff;
-          border: 2px solid #56d1e6;
+          background: var(--hero-start);
+          border: 2px solid #fdba74;
           color: #1b3f6b;
           padding: 1rem;
           border-radius: 10px;
@@ -661,7 +662,7 @@ export default function Checkout({ currentUser }) {
         .badge {
           display: inline-flex;
           align-items: center;
-          background: #e9fbff;
+          background: var(--hero-start);
           color: #1b3f6b;
           padding: 0.3rem 0.7rem;
           border-radius: 20px;
@@ -680,9 +681,9 @@ export default function Checkout({ currentUser }) {
         .saved-addresses-select {
           margin-bottom: 1.5rem;
           padding: 1rem;
-          background: #f0fdff;
+          background: var(--hero-start);
           border-radius: 10px;
-          border: 1px dashed #c7f3fb;
+          border: 1px dashed var(--border);
         }
 
         .saved-addresses-select label {
@@ -696,7 +697,7 @@ export default function Checkout({ currentUser }) {
         .saved-addresses-select select {
           width: 100%;
           padding: 0.7rem;
-          border: 1px solid #c7f3fb;
+          border: 1px solid var(--border);
           border-radius: 8px;
           background: white;
           color: #111;
@@ -708,9 +709,9 @@ export default function Checkout({ currentUser }) {
 
         .saved-addresses-select select:hover,
         .saved-addresses-select select:focus {
-          border-color: #1eaecb;
+          border-color: var(--link);
           outline: none;
-          box-shadow: 0 0 0 3px rgba(30, 174, 203, 0.1);
+          box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
         }
 
         .checkout-form {
@@ -762,8 +763,8 @@ export default function Checkout({ currentUser }) {
         .form-row input:focus,
         .form-row textarea:focus {
           outline: none;
-          border-color: #1eaecb;
-          box-shadow: 0 0 0 3px rgba(30, 174, 203, 0.1);
+          border-color: var(--link);
+          box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
         }
 
         .form-row input.input-error,
@@ -836,7 +837,7 @@ export default function Checkout({ currentUser }) {
         .item-price {
           margin: 0;
           font-weight: 600;
-          color: #1eaecb;
+          color: var(--link);
           white-space: nowrap;
         }
 
@@ -861,7 +862,7 @@ export default function Checkout({ currentUser }) {
         .total-price {
           font-size: 1.4rem;
           font-weight: 700;
-          color: #1eaecb;
+          color: var(--link);
         }
 
         @media (max-width: 1024px) {

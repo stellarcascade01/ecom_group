@@ -12,10 +12,10 @@
 
 a {
   font-weight: 500;
-  color: #1eaecb;
+  color: var(--link, #ea580c);
   text-decoration: none;
 }
-a:hover { color: #147d94; }
+a:hover { color: #c2410c; }
 
 body {
   margin: 0;
@@ -35,6 +35,6 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover { border-color: #1eaecb; }
+button:hover { border-color: var(--link, #ea580c); }
 button:focus,
 button:focus-visible { outline: none; }

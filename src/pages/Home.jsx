@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import ProductCard from '../components/ProductCard'
 import { t } from '../utils/strings'
 import heroImg from '../assets/hero.png'
-import heroImg3 from '../assets/hero3.jpg'
+import heroImg3 from '../assets/hero3.png'
 import heroImg4 from '../assets/hero4.png'
 
 export default function Home({products, onViewProduct, currentUser}){
@@ -23,7 +23,7 @@ export default function Home({products, onViewProduct, currentUser}){
         <div className="carousel-container">
           <img 
             src={heroImages[currentSlide]} 
-            alt="Jute products and market" 
+            alt=" products and market" 
             className="hero-image carousel-image" 
           />
           <div className="hero-overlay">

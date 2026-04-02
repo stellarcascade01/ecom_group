@@ -9,9 +9,30 @@ import connectDB from './config/db.js'
 dotenv.config()
 
 const app = express()
+
+const defaultCorsOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:4173',
+  'http://127.0.0.1:4173',
+  'https://ecom-group-frontend.onrender.com'
+]
+
+const allowedOrigins = String(process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean)
+
+const corsOrigins = allowedOrigins.length ? allowedOrigins : defaultCorsOrigins
+
 app.use(cors({
-  origin: "https://ecom-group-frontend.onrender.com"
-}));
+  origin(origin, callback){
+    // Allow non-browser tools (curl/postman) which send no Origin
+    if (!origin) return callback(null, true)
+    if (corsOrigins.includes(origin)) return callback(null, true)
+    return callback(new Error('Not allowed by CORS'))
+  }
+}))
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: true, limit: '20mb' }))
 

@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import Button from '../components/Button'
 import { t } from '../utils/strings'
-import landingImg from '../assets/hero3.jpg'
+import { apiUrl } from '../utils/api'
+import landingImg from '../assets/hero4.png'
 
 export default function Login({ onSuccess }){
   const [identifier, setIdentifier] = useState('')
@@ -14,7 +15,7 @@ export default function Login({ onSuccess }){
     setError('')
     setLoading(true)
     try{
-      const res = await fetch('https://ecom-group.onrender.com/api/auth/login',{
+      const res = await fetch(apiUrl('/api/auth/login'),{
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ identifier, password })
       })

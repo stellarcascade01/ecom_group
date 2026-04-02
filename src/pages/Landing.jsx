@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Button from '../components/Button'
-import landingImg from '../assets/hero3.jpg'
+import landingImg from '../assets/hero4.png'
 import { t } from '../utils/strings'
 
 export default function Landing({ onNavigate }) {

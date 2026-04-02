@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Button from '../components/Button'
 import { t } from '../utils/strings'
+import { apiUrl } from '../utils/api'
 
 export default function AdminDashboard({ user, onNavigate }){
   const [stats, setStats] = useState({ producers: 0, products: 0 })
@@ -13,8 +14,8 @@ export default function AdminDashboard({ user, onNavigate }){
   async function fetchStats(){
     try{
       const [usersRes, productsRes] = await Promise.all([
-        fetch('https://ecom-group.onrender.com/api/users'),
-        fetch('https://ecom-group.onrender.com/api/products')
+        fetch(apiUrl('/api/users')),
+        fetch(apiUrl('/api/products'))
       ])
       
       const users = await usersRes.json()
@@ -78,7 +79,7 @@ export default function AdminDashboard({ user, onNavigate }){
       <style>{`
         .admin-dashboard {
           min-height: 100vh;
-          background: linear-gradient(180deg, #f1fdff 0%, #e6fbff 100%);
+          background: linear-gradient(180deg, var(--hero-start) 0%, #ffffff 100%);
           padding: 2.5rem 1rem 3rem;
           display: flex;
           flex-direction: column;
@@ -95,7 +96,7 @@ export default function AdminDashboard({ user, onNavigate }){
           grid-template-columns: auto 1fr;
           gap: 1rem;
           background: #ffffff;
-          border: 1px solid #c7f3fb;
+          border: 1px solid var(--border);
           border-radius: 16px;
           padding: 1.5rem 2rem;
           box-shadow: 0 10px 30px rgba(0,0,0,0.05);
@@ -109,7 +110,7 @@ export default function AdminDashboard({ user, onNavigate }){
 
         .eyebrow {
           margin: 0;
-          color: #1eaecb;
+          color: var(--link);
           font-weight: 700;
           letter-spacing: 0.4px;
         }
@@ -148,8 +149,8 @@ export default function AdminDashboard({ user, onNavigate }){
         }
 
         .stat-card:hover {
-          border-color: #1eaecb;
-          box-shadow: 0 8px 24px rgba(30, 174, 203, 0.1);
+          border-color: var(--link);
+          box-shadow: 0 8px 24px rgba(234, 88, 12, 0.1);
           transform: translateY(-2px);
         }
 
@@ -173,7 +174,7 @@ export default function AdminDashboard({ user, onNavigate }){
         .footer-info {
           text-align: center;
           padding: 1.5rem;
-          border-top: 1px solid #c7f3fb;
+          border-top: 1px solid var(--border);
           margin-top: 1rem;
           color: #425a70;
         }

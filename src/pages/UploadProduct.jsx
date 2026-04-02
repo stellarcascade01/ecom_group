@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import Button from '../components/Button'
 import { t } from '../utils/strings'
+import { apiUrl } from '../utils/api'
 
 export default function UploadProduct({ currentUser, onNavigate, categories = [] }){
   const [name, setName] = useState('')
@@ -41,7 +42,7 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
       form.append('producer', currentUser?.name || currentUser?.email || 'Producer')
       if(imageFile) form.append('image', imageFile)
 
-      const res = await fetch('https://ecom-group.onrender.com/api/products', {
+      const res = await fetch(apiUrl('/api/products'), {
         method: 'POST',
         headers: {
           'X-User-Role': currentUser?.role || 'guest',
@@ -170,7 +171,7 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
 
       <style>{`
         :global(body) {
-          background: linear-gradient(180deg, #f1fdff 0%, #e6fbff 100%);
+          background: linear-gradient(180deg, var(--hero-start) 0%, #ffffff 100%);
         }
 
         .upload-page {
@@ -188,7 +189,7 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
           gap: 1rem;
           align-items: center;
           background: #ffffff;
-          border: 1px solid #c7f3fb;
+          border: 1px solid var(--border);
           border-radius: 14px;
           padding: 1.25rem 1.5rem;
           box-shadow: 0 10px 30px rgba(0,0,0,0.05);
@@ -209,7 +210,7 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
         .card {
           background: #ffffff;
           border-radius: 16px;
-          border: 1px solid #d7f1f6;
+          border: 1px solid var(--border);
           box-shadow: 0 12px 35px rgba(0,0,0,0.06);
           padding: 1.5rem;
           width: 100%;
@@ -251,7 +252,7 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
 
         input, textarea, select {
           width: 100%;
-          border: 2px solid #bfeaf2;
+          border: 2px solid var(--border);
           border-radius: 10px;
           padding: 0.85rem 0.9rem;
           font-size: 1rem;
@@ -264,14 +265,14 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
 
         input:focus, textarea:focus, select:focus {
           outline: none;
-          border-color: #1eaecb;
-          box-shadow: 0 0 0 3px rgba(30, 174, 203, 0.2);
+          border-color: var(--link);
+          box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
         }
 
         .input-shell {
           display: flex;
           align-items: center;
-          border: 2px solid #bfeaf2;
+          border: 2px solid var(--border);
           border-radius: 10px;
           background: #fff;
           overflow: hidden;
@@ -280,8 +281,8 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
         }
 
         .input-shell:focus-within {
-          border-color: #1eaecb;
-          box-shadow: 0 0 0 3px rgba(30, 174, 203, 0.2);
+          border-color: var(--link);
+          box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
         }
 
         .input-shell input {
@@ -292,7 +293,7 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
 
         .prefix {
           padding: 0 0.8rem;
-          color: #1eaecb;
+          color: var(--link);
           font-weight: 800;
         }
 
@@ -303,10 +304,10 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
           grid-template-columns: 1fr auto;
           gap: 1rem;
           align-items: start;
-          border: 2px dashed #bfeaf2;
+          border: 2px dashed var(--border);
           border-radius: 12px;
           padding: 1rem;
-          background: #f0fdff;
+          background: var(--hero-start);
           width: 100%;
           box-sizing: border-box;
         }
@@ -330,7 +331,7 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
         }
 
         .ghost {
-          border: 1px solid #bfeaf2;
+          border: 1px solid var(--border);
           background: #fff;
           color: #102a43;
           border-radius: 10px;
@@ -351,7 +352,7 @@ export default function UploadProduct({ currentUser, onNavigate, categories = []
           width: 220px;
           border-radius: 10px;
           overflow: hidden;
-          border: 1px solid #bfeaf2;
+          border: 1px solid var(--border);
           box-shadow: 0 6px 14px rgba(0,0,0,0.08);
         }
 

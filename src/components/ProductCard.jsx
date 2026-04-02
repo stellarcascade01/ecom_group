@@ -5,6 +5,7 @@ import CartIcon from './icons/CartIcon'
 import HeartIcon from './icons/HeartIcon'
 import StarRating from './StarRating'
 import { useFavorites } from '../favorites/useFavorites'
+import { fileUrl } from '../utils/api'
 
 function PlaceholderImage({title}){
   const initials = title.split(' ').slice(0,2).map(s=>s[0]).join('').toUpperCase()
@@ -26,8 +27,7 @@ export default function ProductCard({product, onView, currentUser, showReviews =
 
   const getImageUrl = (image) => {
     if (!image) return null
-    if (image.startsWith('http')) return image
-    return `http://localhost:5000${image}`
+    return fileUrl(image)
   }
 
   return (

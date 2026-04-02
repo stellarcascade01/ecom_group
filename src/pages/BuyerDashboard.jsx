@@ -5,6 +5,7 @@ import CartIcon from '../components/icons/CartIcon'
 import HeartIcon from '../components/icons/HeartIcon'
 import { useFavorites } from '../favorites/useFavorites'
 import { useCart } from '../cart/useCart'
+import { apiUrl, fileUrl } from '../utils/api'
 
 export default function BuyerDashboard({ user, onNavigate, onUserUpdate, products = [], routeParams = null }){
   const { favIds, isFavorite, toggle } = useFavorites()
@@ -32,7 +33,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
     setOrdersError('')
     setLoadingOrders(true)
     try {
-      const res = await fetch(`https://ecom-group.onrender.com/api/orders/customer/${userId}`)
+      const res = await fetch(apiUrl(`/api/orders/customer/${userId}`))
       const data = await res.json()
       if (!res.ok) throw new Error(data?.message || t('failedToFetchOrders'))
       setOrders(Array.isArray(data) ? data : [])
@@ -65,7 +66,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
     }
     setSavingAddr(true)
     try {
-      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/addresses`, {
+      const res = await fetch(apiUrl(`/api/users/${userId}/addresses`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
     setSavingAddr(true)
     try {
       const addr = addresses.find(a => a._id === addrId)
-      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/addresses/${addrId}`, {
+      const res = await fetch(apiUrl(`/api/users/${userId}/addresses/${addrId}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +114,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
     if (!window.confirm(t('buyerDash.deleteAddressConfirm'))) return
     setSavingAddr(true)
     try {
-      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/addresses/${addrId}`, {
+      const res = await fetch(apiUrl(`/api/users/${userId}/addresses/${addrId}`), {
         method: 'DELETE',
         headers: {
           'X-User-Role': user?.role || 'guest'
@@ -201,7 +202,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
                             {o.items.map((it, idx) => {
                               const p = it?.productId
                               const img = (typeof p === 'object' && p?.image) ? p.image : null
-                              const src = img ? `http://localhost:5000${img}` : ''
+                              const src = img ? fileUrl(img) : ''
                               const unitPrice = typeof it?.price === 'number' ? it.price : 0
                               const productId = (typeof p === 'object' && (p?.id || p?._id)) ? (p.id || p._id) : (it?.productId || null)
                               const canOpen = Boolean(productId && onNavigate)
@@ -270,7 +271,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
                   <div className="bd-order-items" style={{ marginTop: 0, paddingTop: 0, borderTop: 'none' }}>
                     {favProducts.map((p) => {
                       const img = p?.image || null
-                      const src = img ? (String(img).startsWith('http') ? img : `http://localhost:5000${img}`) : ''
+                      const src = img ? fileUrl(img) : ''
                       const productId = p?.id || p?._id
                       const canOpen = Boolean(productId && onNavigate)
                       const price = typeof p?.price === 'number' ? p.price : Number(p?.price || 0)
@@ -465,8 +466,8 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
         }
 
         .bd-hero {
-          background: linear-gradient(135deg, #e9fbff, #f6feff);
-          border: 1px solid #c7f3fb;
+          background: linear-gradient(135deg, var(--hero-start), #ffffff);
+          border: 1px solid var(--border);
           border-radius: 14px;
           padding: 1.5rem;
         }
@@ -474,7 +475,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
         .bd-card {
           position: relative;
           overflow: hidden;
-          background: linear-gradient(180deg, #ffffff, #f0fdff);
+          background: linear-gradient(180deg, #ffffff, var(--hero-start));
           border: 1px solid #dfe9e1;
           border-radius: 12px;
           padding: 0.85rem 0.85rem 0.75rem;
@@ -489,18 +490,18 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
           content: '';
           position: absolute;
           inset: 0;
-          background: radial-gradient(circle at 20% 10%, rgba(30,174,203,0.10), transparent 45%);
+          background: radial-gradient(circle at 20% 10%, rgba(234,88,12,0.10), transparent 45%);
           pointer-events: none;
         }
 
         .bd-card:hover {
           transform: translateY(-2px);
           box-shadow: 0 16px 34px rgba(0,0,0,0.08);
-          border-color: #b4eef6;
+          border-color: #fdba74;
         }
 
         .bd-card:focus-within {
-          border-color: #1eaecb;
+          border-color: var(--link);
         }
 
         .bd-card h3 {
@@ -584,7 +585,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
 
         .bd-order-item-row.clickable:focus {
           outline: none;
-          box-shadow: 0 0 0 2px rgba(30, 174, 203, 0.15);
+          box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.15);
         }
 
         .bd-order-item-left {
@@ -637,7 +638,7 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
           align-items: center;
           padding: 0.2rem 0.55rem;
           border-radius: 999px;
-          background: #e9fbff;
+          background: var(--hero-start);
           color: #1b3f6b;
           font-weight: 700;
           font-size: 0.9rem;
@@ -675,8 +676,8 @@ export default function BuyerDashboard({ user, onNavigate, onUserUpdate, product
         .bd-form-group input:focus,
         .bd-form-group textarea:focus {
           outline: none;
-          border-color: #1eaecb;
-          box-shadow: 0 0 0 2px rgba(30, 174, 203, 0.1);
+          border-color: var(--link);
+          box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.1);
         }
 
         .bd-addresses {

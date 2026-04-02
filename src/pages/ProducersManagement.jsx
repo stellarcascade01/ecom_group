@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import Button from '../components/Button'
 import { t } from '../utils/strings'
+import { apiUrl } from '../utils/api'
 
 export default function ProducersManagement({ currentUser, onNavigate }){
   const [producers, setProducers] = useState([])
@@ -13,7 +14,7 @@ export default function ProducersManagement({ currentUser, onNavigate }){
     setLoading(true)
     setError('')
     try{
-      const res = await fetch('https://ecom-group.onrender.com/api/users')
+      const res = await fetch(apiUrl('/api/users'))
       if(!res.ok) throw new Error(t('failedToFetchUsers'))
       const allUsers = await res.json()
       const producersList = allUsers.filter(u => u.role === 'producer')
@@ -46,7 +47,7 @@ export default function ProducersManagement({ currentUser, onNavigate }){
     setError('')
     setSavingId(producer._id)
     try{
-      const res = await fetch(`https://ecom-group.onrender.com/api/users/${producer._id}/blocked`, {
+      const res = await fetch(apiUrl(`/api/users/${producer._id}/blocked`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -275,8 +276,8 @@ export default function ProducersManagement({ currentUser, onNavigate }){
 
         .badge {
           padding: 0.25rem 0.6rem;
-          background: #e9fbff;
-          color: #1eaecb;
+          background: var(--hero-start);
+          color: var(--link);
           border-radius: 999px;
           font-size: 0.8rem;
           font-weight: 700;
@@ -301,7 +302,7 @@ export default function ProducersManagement({ currentUser, onNavigate }){
         }
 
         .value {
-          color: #1eaecb;
+          color: var(--link);
           text-decoration: none;
         }
 
@@ -388,7 +389,7 @@ export default function ProducersManagement({ currentUser, onNavigate }){
         }
 
         .modal-section a {
-          color: #1eaecb;
+          color: var(--link);
           text-decoration: none;
         }
 

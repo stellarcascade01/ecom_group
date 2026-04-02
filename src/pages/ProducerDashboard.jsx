@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Button from '../components/Button'
 import { t } from '../utils/strings'
+import { apiUrl } from '../utils/api'
 
 export default function ProducerDashboard({ user, onNavigate, onUserUpdate, routeParams = null }){
   const name = user?.name || 'Producer'
@@ -41,7 +42,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
     let active = true
     async function load(){
       try{
-        const res = await fetch('https://ecom-group.onrender.com/api/products')
+        const res = await fetch(apiUrl('/api/products'))
         if(!res.ok) throw new Error('Failed to load products')
         const data = await res.json()
         if(!active) return
@@ -66,7 +67,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
     setUpdatingItemKey(key)
     setOrdersError('')
     try {
-      const res = await fetch(`https://ecom-group.onrender.com/api/orders/${orderId}/items/${productId}/${action}`, {
+      const res = await fetch(apiUrl(`/api/orders/${orderId}/items/${productId}/${action}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -112,7 +113,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
       setOrdersLoading(true)
       setOrdersError('')
       try{
-        const res = await fetch(`https://ecom-group.onrender.com/api/orders/producer/${encodeURIComponent(producerName)}`)
+        const res = await fetch(apiUrl(`/api/orders/producer/${encodeURIComponent(producerName)}`))
         if(!res.ok) throw new Error('Failed to load orders')
         const data = await res.json()
         if(!active) return
@@ -170,7 +171,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
     if (!profileForm.name.trim()) { setProfileError('Name is required'); return }
     setSavingProfile(true)
     try {
-      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/profile`, {
+      const res = await fetch(apiUrl(`/api/users/${userId}/profile`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'X-User-Role': user?.role || 'guest' },
         body: JSON.stringify(profileForm)
@@ -212,7 +213,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
     if(!userId){ setAvatarError('Missing user id for update'); return }
     setSavingAvatar(true)
     try{
-      const res = await fetch(`https://ecom-group.onrender.com/api/users/${userId}/avatar`, {
+      const res = await fetch(apiUrl(`/api/users/${userId}/avatar`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'X-User-Role': user?.role || 'guest' },
         body: JSON.stringify({ avatar: value })
@@ -469,8 +470,8 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
       </div>
 
       <style>{`
-        .producer-dashboard { background: #f1fdff; min-height: 100vh; padding-bottom: 3rem; }
-        .pd-header { background: linear-gradient(135deg, #1eaecb, #147d94); color: white; padding: 2rem; }
+        .producer-dashboard { background: var(--hero-start); min-height: 100vh; padding-bottom: 3rem; }
+        .pd-header { background: linear-gradient(135deg, var(--link), #c2410c); color: white; padding: 2rem; }
         .pd-header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap; }
         .pd-avatar-section { display: flex; gap: 1.5rem; align-items: center; flex: 1; min-width: 250px; }
         .pd-avatar-large { width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 2.5rem; font-weight: 800; flex-shrink: 0; }
@@ -484,48 +485,48 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
         .pd-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 2rem; }
         .pd-row-two { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
         .pd-row-two > .pd-card { margin-bottom: 0; }
-        .pd-card h2 { margin: 0 0 1.5rem; font-size: 1.3rem; color: #147d94; }
+        .pd-card h2 { margin: 0 0 1.5rem; font-size: 1.3rem; color: #c2410c; }
         .pd-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; }
         .pd-card-header h2 { margin: 0; }
         .pd-collapse-toggle { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; background: transparent; border: none; padding: 0; cursor: pointer; text-align: left; }
-        .pd-collapse-title { font-size: 1.3rem; font-weight: 800; color: #147d94; }
+        .pd-collapse-title { font-size: 1.3rem; font-weight: 800; color: #c2410c; }
         .pd-collapse-meta { display: inline-flex; align-items: center; gap: 0.5rem; }
         .pd-collapse-caret { font-size: 1.1rem; opacity: 0.8; }
         .pd-badge { background: #ff5722; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-        .stat { background: #f1fdff; padding: 1.25rem; border-radius: 10px; text-align: center; }
-        .stat-number { font-size: 2rem; font-weight: 800; color: #1eaecb; margin-bottom: 0.5rem; }
+        .stat { background: var(--hero-start); padding: 1.25rem; border-radius: 10px; text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: 800; color: var(--link); margin-bottom: 0.5rem; }
         .stat-label { color: #666; font-size: 0.9rem; font-weight: 600; }
         .sales-graph { padding: 0.75rem 0 0.25rem; }
         .sales-graph-svg { width: 100%; height: 160px; display: block; }
         .sales-graph-axis { stroke: #d7ddd8; stroke-width: 2; }
-        .sales-graph-line { fill: none; stroke: #1eaecb; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-        .sales-graph-point { fill: #147d94; stroke: #ffffff; stroke-width: 2; }
-        .sales-graph-value { font-size: 14px; font-weight: 800; fill: #147d94; }
+        .sales-graph-line { fill: none; stroke: var(--link); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .sales-graph-point { fill: #c2410c; stroke: #ffffff; stroke-width: 2; }
+        .sales-graph-value { font-size: 14px; font-weight: 800; fill: #c2410c; }
         .sales-graph-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(44px, 1fr)); gap: 0.25rem; margin-top: 0.4rem; }
         .sales-graph-label { text-align: center; font-size: 0.8rem; color: #666; }
 
         .pd-trends-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         .pd-trend-card { background: linear-gradient(180deg, #ffffff, #fbfffd); border: 1px solid #e0e0e0; border-radius: 12px; padding: 1rem; }
         .pd-trend-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; }
-        .pd-trend-title { margin: 0; font-size: 1rem; font-weight: 800; color: #147d94; }
-        .pd-trend-pill { background: #e9fbff; color: #147d94; border: 1px solid #c7f3fb; border-radius: 999px; padding: 0.25rem 0.6rem; font-weight: 800; font-size: 0.85rem; }
+        .pd-trend-title { margin: 0; font-size: 1rem; font-weight: 800; color: #c2410c; }
+        .pd-trend-pill { background: var(--hero-start); color: #c2410c; border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.6rem; font-weight: 800; font-size: 0.85rem; }
 
         .pd-graph-area { opacity: 0.18; }
-        .pd-graph-area--sales { fill: #1eaecb; }
-        .pd-graph-area--income { fill: #147d94; }
-        .pd-graph-line--income { stroke: #147d94; }
-        .pd-graph-point--income { fill: #1eaecb; }
+        .pd-graph-area--sales { fill: var(--link); }
+        .pd-graph-area--income { fill: #c2410c; }
+        .pd-graph-line--income { stroke: #c2410c; }
+        .pd-graph-point--income { fill: var(--link); }
         .sales-chart { display: flex; gap: 1rem; align-items: flex-end; height: 200px; padding: 1rem 0; }
         .chart-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
         .bar-container { width: 100%; height: 150px; background: #f0f0f0; border-radius: 6px; display: flex; align-items: flex-end; justify-content: center; }
-        .bar { width: 70%; background: linear-gradient(180deg, #1eaecb, #147d94); border-radius: 4px 4px 0 0; min-height: 10px; transition: all 0.3s; }
+        .bar { width: 70%; background: linear-gradient(180deg, var(--link), #c2410c); border-radius: 4px 4px 0 0; min-height: 10px; transition: all 0.3s; }
         .bar-label { font-size: 0.8rem; color: #666; }
-        .bar-value { font-weight: 700; color: #1eaecb; font-size: 0.9rem; }
+        .bar-value { font-weight: 700; color: var(--link); font-size: 0.9rem; }
         .analytics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        .analytics-item { background: linear-gradient(135deg, #e9fbff, #f6feff); padding: 1rem; border-radius: 8px; text-align: center; }
+        .analytics-item { background: linear-gradient(135deg, var(--hero-start), #ffffff); padding: 1rem; border-radius: 8px; text-align: center; }
         .analytics-label { color: #666; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .analytics-value { font-size: 1.8rem; font-weight: 800; color: #1eaecb; }
+        .analytics-value { font-size: 1.8rem; font-weight: 800; color: var(--link); }
         .stat-label { color: #666; font-size: 0.9rem; font-weight: 600; }
         .order-item { display: block; border: 1px solid #e0e0e0; border-radius: 10px; padding: 1rem; transition: all 0.2s; }
         .order-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
@@ -539,13 +540,13 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
         .order-status.shipped, .order-status.delivered { background: #d1e7dd; color: #0f5132; }
         .order-details { margin-bottom: 0.75rem; }
         .order-details p { margin: 0.2rem 0; font-size: 0.9rem; }
-        .order-details strong { color: #147d94; }
-        .order-payment { font-size: 0.85rem; font-weight: 600; color: #1eaecb; }
+        .order-details strong { color: #c2410c; }
+        .order-payment { font-size: 0.85rem; font-weight: 600; color: var(--link); }
         .order-products { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
         .order-product-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-top: 0.6rem; border-top: 1px dashed rgba(0,0,0,0.08); }
         .order-product-row:first-child { border-top: none; padding-top: 0; }
         .order-product-main { min-width: 0; flex: 1; }
-        .order-product-name { font-weight: 800; color: #147d94; }
+        .order-product-name { font-weight: 800; color: #c2410c; }
         .order-product-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
         .order-product-actions .btn { padding: 0.2rem 0.55rem; font-size: 0.78rem; border-radius: 6px; }
         .order-item-status { padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 800; text-transform: capitalize; white-space: nowrap; }
@@ -556,12 +557,12 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
         .pd-muted { color: #999; font-size: 0.9rem; margin: 0; }
         .pd-alert { padding: 0.75rem 1rem; border-radius: 10px; margin-bottom: 1rem; font-size: 0.9rem; }
         .pd-alert.error { background: #fdecea; color: #b23b31; border: 1px solid #f5c2c0; }
-        .pd-alert.success { background: #e6fbff; color: #147d94; border: 1px solid #c7f3fb; }
+        .pd-alert.success { background: var(--hero-start); color: #c2410c; border: 1px solid var(--border); }
         .pd-input { width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 0.95rem; }
-        .pd-input:focus { outline: 2px solid #1eaecb; border-color: #1eaecb; box-shadow: 0 0 0 3px rgba(30,174,203,0.15); }
+        .pd-input:focus { outline: 2px solid var(--link); border-color: var(--link); box-shadow: 0 0 0 3px rgba(234,88,12,0.15); }
         .pd-button-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
         .pd-button-group--profile-actions { align-items: center; }
-        .pd-section-divider { font-weight: 700; color: #1eaecb; margin: 1.5rem 0 1rem; padding-top: 1rem; border-top: 1px solid #eee; font-size: 0.95rem; }
+        .pd-section-divider { font-weight: 700; color: var(--link); margin: 1.5rem 0 1rem; padding-top: 1rem; border-top: 1px solid #eee; font-size: 0.95rem; }
         .pd-edit-profile { position: sticky; top: 20px; }
         @media (max-width: 1024px) {
           .pd-top-row { grid-template-columns: 1fr; }

@@ -2,7 +2,19 @@ import { useState } from 'react'
 import { useCategoryPanel } from '../category/useCategoryPanel'
 
 export default function CategoryPanel({
-  categories = ['All','Bags','Rugs','Mats','Planters','Home Decor','Accessories','Kitchen','Garden','Wall Hangings','Furniture'],
+  categories = [
+    'All',
+    'Electronics',
+    'Fashion & Apparel',
+    'Home & Living',
+    'Beauty & Personal Care',
+    'Sports & Outdoor',
+    'Toys & Games',
+    'Groceries & Daily Needs',
+    'Books & Education',
+    'Automotive',
+    'Digital & Deals'
+  ],
   onSelect,
   priceFilter,
   onPriceChange,
@@ -107,14 +119,14 @@ export default function CategoryPanel({
         }
 
         .category-tab:hover {
-          background-color: #f1fdff;
-          color: #1eaecb;
+          background-color: var(--hero-start);
+          color: var(--link);
         }
 
         .category-tab.active {
           background-color: transparent;
-          color: #1eaecb;
-          border-bottom-color: #1eaecb;
+          color: var(--link);
+          border-bottom-color: var(--link);
           font-weight: 700;
         }
       `}</style>

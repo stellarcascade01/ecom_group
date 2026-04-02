@@ -24,8 +24,65 @@ import ProducerShop from './pages/ProducerShop'
 import ProductManagement from './pages/ProductManagement'
 import { useCategoryPanel } from './category/useCategoryPanel'
 import Landing from './pages/Landing'
+import { apiUrl, fileUrl } from './utils/api'
 
 const ROUTE_STORAGE_KEY = 'route'
+
+const TOP_CATEGORIES = [
+  'All',
+  'Electronics',
+  'Fashion & Apparel',
+  'Home & Living',
+  'Beauty & Personal Care',
+  'Sports & Outdoor',
+  'Toys & Games',
+  'Groceries & Daily Needs',
+  'Books & Education',
+  'Automotive',
+  'Digital & Deals'
+]
+
+const CATEGORY_ALIASES = {
+  Electronics: ['Smartphones', 'Laptops & Computers', 'Tablets', 'Cameras', 'Headphones & Audio', 'Smart Gadgets'],
+  'Fashion & Apparel': ["Men's Clothing", "Women's Clothing", "Kid's Fashion", 'Shoes', 'Bags & Wallets', 'Watches', 'Bags', 'Wallets', 'Accessories'],
+  'Home & Living': ['Furniture', 'Home Decor', 'Kitchen Appliances', 'Lighting', 'Storage & Organization', 'Rugs', 'Mats', 'Planters', 'Kitchen', 'Garden', 'Wall Hangings', 'Decor', 'Home'],
+  'Beauty & Personal Care': ['Skincare', 'Makeup', 'Hair Care', 'Perfumes', 'Personal Hygiene', 'Health & Wellness', 'Supplements', 'Medical Devices'],
+  'Sports & Outdoor': ['Fitness Equipment', 'Outdoor Gear', 'Sportswear', 'Cycling Accessories', 'Camping Equipment', 'Fitness Products'],
+  'Toys & Games': ['Educational Toys', 'Board Games', 'Action Figures', 'Puzzles'],
+  'Groceries & Daily Needs': ['Fruits & Vegetables', 'Packaged Food', 'Beverages', 'Snacks', 'Fresh Goods'],
+  'Books & Education': ['Academic Books', 'Novels', 'Stationery', 'Educational Materials'],
+  Automotive: ['Car Accessories', 'Bike Accessories', 'Vehicle Tools'],
+  'Digital & Deals': ['Digital Products', 'Software', 'Online Courses', 'E-books', 'Deals & Offers', 'Flash Sale', 'Discounted Products', 'Clearance Items']
+}
+
+function normalizeCategoryKey(value){
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[’']/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+
+const CATEGORY_ALIAS_TO_TOP = (() => {
+  const map = new Map()
+  for (const [top, aliases] of Object.entries(CATEGORY_ALIASES)){
+    map.set(normalizeCategoryKey(top), top)
+    for (const alias of aliases){
+      map.set(normalizeCategoryKey(alias), top)
+    }
+  }
+  for (const top of TOP_CATEGORIES){
+    map.set(normalizeCategoryKey(top), top)
+  }
+  return map
+})()
+
+function normalizeCategory(rawCategory){
+  const key = normalizeCategoryKey(rawCategory)
+  return CATEGORY_ALIAS_TO_TOP.get(key) || null
+}
 
 const KNOWN_PAGES = new Set([
   'landing',
@@ -119,7 +176,7 @@ function ProductDetail({ product, products = [], onViewProduct, onNavigate, curr
     async function load(){
       if(!product?.id) return
       try{
-        const res = await fetch(`https://ecom-group.onrender.com/api/products/${product.id}`)
+        const res = await fetch(apiUrl(`/api/products/${product.id}`))
         if(!res.ok) throw new Error('Failed to load product details')
         const json = await res.json()
         if(active) setFull({ ...product, ...json, id: json.id || json._id || product.id })
@@ -148,7 +205,7 @@ function ProductDetail({ product, products = [], onViewProduct, onNavigate, curr
     try{
       if(!form.rating) throw new Error(t('selectStarRating'))
       const reviewerName = (currentUser?.name || currentUser?.email || t('anonymous') || 'Anonymous')
-      const res = await fetch(`https://ecom-group.onrender.com/api/products/${product.id}/reviews`, {
+      const res = await fetch(apiUrl(`/api/products/${product.id}/reviews`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -177,8 +234,7 @@ function ProductDetail({ product, products = [], onViewProduct, onNavigate, curr
 
   const getImageUrl = (image) => {
     if (!image) return null
-    if (image.startsWith('http')) return image
-    return `http://localhost:5000${image}`
+    return fileUrl(image)
   }
 
   return (
@@ -354,7 +410,7 @@ function App(){
       setError(null)
       try{
         const [pRes] = await Promise.all([
-          fetch('https://ecom-group.onrender.com/api/products')
+          fetch(apiUrl('/api/products'))
         ])
         if(!pRes.ok) throw new Error('Failed to load products')
         const pJson = await pRes.json()
@@ -413,7 +469,7 @@ function App(){
       )
     : list
   const byCategory = (list)=> selectedCategory && selectedCategory !== 'All'
-    ? list.filter(p => (p.category || 'All') === selectedCategory)
+    ? list.filter(p => (normalizeCategory(p.category) || 'All') === selectedCategory)
     : list
   const byPrice = (list)=> list.filter(p => {
     const price = Number(p.price || 0)
@@ -443,21 +499,7 @@ function App(){
 
   const visibleProducts = sortProducts(bySearch(byPrice(byCategory(products))))
 
-  const categories = React.useMemo(()=>{
-    const curated = ['Bags','Rugs','Planters','Fresh Goods','Decor','Home']
-    const hidden = new Set(['Accessories','Home Decor','Kitchen','Garden','Wall Hangings','Furniture','Mats'])
-    const set = new Set(['All', ...curated])
-    const toTitle = s => String(s || '').trim().split(/\s+/).map(w=>w[0]?w[0].toUpperCase()+w.slice(1).toLowerCase():'').join(' ')
-    products.forEach(p => {
-      if(p.category){
-        const normalized = toTitle(p.category)
-        if(!hidden.has(normalized)){
-          set.add(normalized)
-        }
-      }
-    })
-    return Array.from(set)
-  }, [products])
+  const categories = TOP_CATEGORIES
 
   // Inline dashboard access checks (keeps linter happy by avoiding unused helper params)
 

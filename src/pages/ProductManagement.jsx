@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import Button from '../components/Button'
 import { t } from '../utils/strings'
+import { apiUrl } from '../utils/api'
 
 export default function ProductManagement({ currentUser, onNavigate }){
   const [products, setProducts] = useState([])
@@ -14,7 +15,7 @@ export default function ProductManagement({ currentUser, onNavigate }){
     setLoading(true)
     setError('')
     try{
-      const res = await fetch('https://ecom-group.onrender.com/api/products')
+      const res = await fetch(apiUrl('/api/products'))
       if(!res.ok) throw new Error('Failed to fetch products')
       const allProducts = await res.json()
       const producerName = currentUser?.name || currentUser?.email
@@ -46,7 +47,7 @@ export default function ProductManagement({ currentUser, onNavigate }){
     if(!editingId) return
     setError('')
     try{
-      const res = await fetch(`https://ecom-group.onrender.com/api/products/${editingId}`, {
+      const res = await fetch(apiUrl(`/api/products/${editingId}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +71,7 @@ export default function ProductManagement({ currentUser, onNavigate }){
     if(!window.confirm(t('confirmDelete'))) return
     setError('')
     try{
-      const res = await fetch(`https://ecom-group.onrender.com/api/products/${productId}`, {
+      const res = await fetch(apiUrl(`/api/products/${productId}`), {
         method: 'DELETE',
         headers: {
           'X-User-Role': currentUser?.role || 'guest',
@@ -339,8 +340,8 @@ export default function ProductManagement({ currentUser, onNavigate }){
         }
 
         .responsive-table thead {
-          background: #f0fdff;
-          border-bottom: 2px solid #c7f3fb;
+          background: var(--hero-start);
+          border-bottom: 2px solid var(--border);
         }
 
         .responsive-table th {
@@ -366,7 +367,7 @@ export default function ProductManagement({ currentUser, onNavigate }){
         }
 
         .responsive-table tbody tr:hover {
-          background: #f0fdff;
+          background: var(--hero-start);
         }
 
         .actions-cell {
@@ -453,7 +454,7 @@ export default function ProductManagement({ currentUser, onNavigate }){
         .form-group input,
         .form-group textarea {
           width: 100%;
-          border: 2px solid #bfeaf2;
+          border: 2px solid var(--border);
           border-radius: 10px;
           padding: 0.85rem 0.9rem;
           font-size: 1rem;
@@ -466,8 +467,8 @@ export default function ProductManagement({ currentUser, onNavigate }){
         .form-group input:focus,
         .form-group textarea:focus {
           outline: none;
-          border-color: #1eaecb;
-          box-shadow: 0 0 0 3px rgba(30, 174, 203, 0.2);
+          border-color: var(--link);
+          box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
         }
 
         .modal-actions {

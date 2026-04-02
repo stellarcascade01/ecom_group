@@ -5,6 +5,7 @@ This folder contains a minimal Express + MongoDB backend used by the Jute E-comm
 Quick start
 
 1. Copy `.env.example` to `.env` and set `MONGODB_URI`.
+	- Optional: set `CORS_ORIGIN` (comma-separated) for your frontend URLs.
 2. Install dependencies:
 
 ```bash
