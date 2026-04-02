@@ -74,6 +74,36 @@ body{background:var(--bg); color:var(--text);}
   width: 100%;
 }
 .site-header .brand{font-weight:800; font-size:1.6rem; letter-spacing:0.4px}
+
+.brand-lockup{
+  display:inline-flex;
+  align-items:center;
+  gap:0.5rem;
+  white-space:nowrap;
+}
+
+.brand-mark{
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background: transparent;
+  border: none;
+  color: var(--link);
+  font-weight: 900;
+  font-size: 0.9em;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.brand-logo{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display:block;
+}
 .site-header nav .btn{ margin-left:0 }
 .site-header nav .btn:not(.btn--link){
   background:#ffedd5;

@@ -5,6 +5,7 @@ import CartPanel from './CartPanel'
 import Button from './Button'
 import CartIcon from './icons/CartIcon'
 import HomeIcon from './icons/HomeIcon'
+import logo from '../assets/logo.png'
 
 export default function Header({onNavigate, onSearch, searchQuery = '', user, onLogout, onCheckout, currentPage = 'home'}){
   const { count, setIsOpen } = useCart()
@@ -44,6 +45,8 @@ export default function Header({onNavigate, onSearch, searchQuery = '', user, on
     ? t('dashboard')
     : t('nav.home')
 
+  const brandText = String(t('brand') || '').trim() || 'ShopSphere'
+
   const initials = (user?.name || user?.email || 'A').split(' ').slice(0,2).map(s=>s[0]).join('').toUpperCase()
 
   const isActivePage = (page) => currentPage === page
@@ -52,7 +55,12 @@ export default function Header({onNavigate, onSearch, searchQuery = '', user, on
     <header className="site-header">
       
       <nav>
-        <div className="brand">{t('brand')}</div>
+        <div className="brand brand-lockup">
+          <span className="brand-mark" aria-hidden>
+            <img className="brand-logo" src={logo} alt="" />
+          </span>
+          <span className="brand-text">{brandText}</span>
+        </div>
         <Button
           variant="link"
           className="nav-icon-btn"

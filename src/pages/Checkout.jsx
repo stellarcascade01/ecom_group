@@ -244,7 +244,7 @@ export default function Checkout({ currentUser, onNavigate }) {
 
               <h1 className="order-confirm-title">Thank You</h1>
               <p className="order-confirm-subtitle">
-                for shopping with <strong>{t('brand')}</strong>!
+                for shopping with <strong>{String(t('brand') || '').trim() || 'ShopSphere'}</strong>!
               </p>
 
               <p className="order-confirm-note">{t('orderPlacedSuccess')}</p>

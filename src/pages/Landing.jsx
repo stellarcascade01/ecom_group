@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Button from '../components/Button'
 import landingImg from '../assets/hero4.png'
+import logo from '../assets/logo.png'
 import { t } from '../utils/strings'
 
 export default function Landing({ onNavigate }) {
@@ -25,6 +26,8 @@ export default function Landing({ onNavigate }) {
 
   const current = words[index]
 
+  const brandText = String(t('brand') || '').trim() || 'ShopSphere'
+
   return (
     <main className="page landing-page">
       <section className="landing-hero" aria-label="Landing">
@@ -34,7 +37,12 @@ export default function Landing({ onNavigate }) {
         >
           <div className="landing-hero__text">
             <h1 className="landing-hero__title">
-              {t('brand')}
+              <span className="brand-lockup">
+                <span className="brand-mark" aria-hidden>
+                  <img className="brand-logo" src={logo} alt="" />
+                </span>
+                <span className="brand-text">{brandText}</span>
+              </span>
             </h1>
             <p className="landing-hero__subtitle">
               {t('landingSubtitle')}{' '}
