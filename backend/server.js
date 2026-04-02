@@ -3,10 +3,19 @@ import express from 'express'
 import cors from 'cors'
 import process from 'process'
 import path from 'path'
+import fs from 'fs'
 import { fileURLToPath } from 'url'
 import connectDB from './config/db.js'
 
-dotenv.config()
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const envPath = path.join(__dirname, '.env')
+if (fs.existsSync(envPath)) {
+  dotenv.config({ path: envPath })
+} else {
+  dotenv.config()
+}
 
 const app = express()
 
@@ -37,8 +46,6 @@ app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: true, limit: '20mb' }))
 
 // serve uploaded files (determine path relative to this file)
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 const uploadsPath = path.join(__dirname, 'uploads')
 app.use('/uploads', express.static(uploadsPath))
 

@@ -6,6 +6,9 @@ Quick start
 
 1. Copy `.env.example` to `.env` and set `MONGODB_URI`.
 	- Optional: set `CORS_ORIGIN` (comma-separated) for your frontend URLs.
+	- Optional (recommended for localhost + Render): configure Cloudinary so uploaded images become permanent URLs.
+	  - Set `CLOUDINARY_URL` OR (`CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`).
+	  - Optional: set `CLOUDINARY_FOLDER`.
 2. Install dependencies:
 
 ```bash

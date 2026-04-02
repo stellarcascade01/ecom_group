@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useCart } from '../cart/useCart'
 import Button from './Button'
 import CartIcon from './icons/CartIcon'
@@ -19,16 +19,22 @@ function PlaceholderImage({title}){
 export default function ProductCard({product, onView, currentUser, showReviews = true}){
   const { addItem } = useCart()
   const { isFavorite, toggle } = useFavorites()
+  const [imageFailed, setImageFailed] = useState(false)
   const effectiveUser = currentUser ?? (() => {
     try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
   })()
   const isBuyer = (effectiveUser?.role || '').toLowerCase() === 'buyer'
   const canShop = isBuyer || !effectiveUser
 
-  const getImageUrl = (image) => {
+  const imageSrc = useMemo(() => {
+    const image = product?.image
     if (!image) return null
     return fileUrl(image)
-  }
+  }, [product?.image])
+
+  useEffect(() => {
+    setImageFailed(false)
+  }, [imageSrc])
 
   return (
     <div
@@ -43,17 +49,15 @@ export default function ProductCard({product, onView, currentUser, showReviews =
         }
       }}
     >
-      {product.image ? (
-        <img 
-          src={getImageUrl(product.image)} 
+      {imageSrc && !imageFailed ? (
+        <img
+          src={imageSrc}
           alt={product.name}
-          onError={(e) => {
-            e.target.style.display = 'none'
-            e.target.parentElement?.appendChild(PlaceholderImage({title: product.name}))
-          }}
+          loading="lazy"
+          onError={() => setImageFailed(true)}
         />
       ) : (
-        <PlaceholderImage title={product.name} />
+        <PlaceholderImage title={product.name || 'Product'} />
       )}
       <div className="product-body">
         <h4>{product.name}</h4>

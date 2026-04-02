@@ -2,10 +2,52 @@ import express from 'express'
 import multer from 'multer'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fs from 'fs/promises'
+import { v2 as cloudinary } from 'cloudinary'
 const router = express.Router()
 
 import Product from '../models/Product.js'
 import User from '../models/User.js'
+
+let cloudinaryReady = null
+
+function ensureCloudinary(){
+  if (cloudinaryReady !== null) return cloudinaryReady
+
+  const cloudinaryUrl = String(process.env.CLOUDINARY_URL || '').trim()
+  const cloudName = String(process.env.CLOUDINARY_CLOUD_NAME || '').trim()
+  const apiKey = String(process.env.CLOUDINARY_API_KEY || '').trim()
+  const apiSecret = String(process.env.CLOUDINARY_API_SECRET || '').trim()
+
+  try {
+    if (cloudinaryUrl) {
+      const parsed = new URL(cloudinaryUrl)
+      if (parsed.protocol !== 'cloudinary:') throw new Error('CLOUDINARY_URL must start with cloudinary://')
+      if (!parsed.hostname || !parsed.username || !parsed.password) {
+        throw new Error('CLOUDINARY_URL is missing cloud name, api key, or api secret')
+      }
+      cloudinary.config({
+        cloud_name: parsed.hostname,
+        api_key: decodeURIComponent(parsed.username),
+        api_secret: decodeURIComponent(parsed.password),
+        secure: true
+      })
+      cloudinaryReady = true
+      return true
+    }
+
+    if (cloudName && apiKey && apiSecret) {
+      cloudinary.config({ cloud_name: cloudName, api_key: apiKey, api_secret: apiSecret, secure: true })
+      cloudinaryReady = true
+      return true
+    }
+  } catch (err) {
+    console.error('Cloudinary configuration error:', err)
+  }
+
+  cloudinaryReady = false
+  return false
+}
 
 const requireNotBlockedProducer = async (req, res) => {
   const role = (req.headers['x-user-role'] || '').toLowerCase()
@@ -75,8 +117,29 @@ router.post('/', upload.single('image'), async (req, res) => {
     if(data.price) data.price = Number(data.price)
     if(data.stock) data.stock = Number(data.stock)
     if(req.file){
-      // path served at /uploads/<filename>
-      data.image = `/uploads/${req.file.filename}`
+      const localPath = `/uploads/${req.file.filename}`
+
+      if (ensureCloudinary()) {
+        try {
+          const folder = String(process.env.CLOUDINARY_FOLDER || 'ecommerce_group').trim() || 'ecommerce_group'
+          const uploaded = await cloudinary.uploader.upload(req.file.path, {
+            folder,
+            resource_type: 'image'
+          })
+
+          data.image = uploaded?.secure_url || uploaded?.url || localPath
+
+          // Clean up local file after successful Cloudinary upload
+          if (uploaded?.secure_url || uploaded?.url) {
+            try { await fs.unlink(req.file.path) } catch { /* ignore */ }
+          }
+        } catch (err) {
+          console.error('Cloudinary upload failed; using local uploads path.', err)
+          data.image = localPath
+        }
+      } else {
+        data.image = localPath
+      }
     }
     const p = new Product(data)
     await p.save()
