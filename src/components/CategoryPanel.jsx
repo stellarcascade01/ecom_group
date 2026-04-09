@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCategoryPanel } from '../category/useCategoryPanel'
 
 export default function CategoryPanel({
@@ -16,13 +16,18 @@ export default function CategoryPanel({
     'Digital & Deals'
   ],
   onSelect,
+  selectedCategory,
   priceFilter,
   onPriceChange,
   sortOption,
   onSortChange
 }){
-  const [activeCategory, setActiveCategory] = useState('All')
+  const [activeCategory, setActiveCategory] = useState(selectedCategory || 'All')
   const { isOpen, setIsOpen } = useCategoryPanel()
+
+  useEffect(() => {
+    setActiveCategory(selectedCategory || 'All')
+  }, [selectedCategory])
 
   const handleSelect = (cat)=>{
     setActiveCategory(cat)

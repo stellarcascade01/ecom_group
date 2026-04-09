@@ -25,6 +25,7 @@ import ProductManagement from './pages/ProductManagement'
 import { useCategoryPanel } from './category/useCategoryPanel'
 import Landing from './pages/Landing'
 import { apiUrl, fileUrl } from './utils/api'
+import ShopNow from './pages/ShopNow'
 
 const ROUTE_STORAGE_KEY = 'route'
 
@@ -89,6 +90,7 @@ const KNOWN_PAGES = new Set([
   'login',
   'signup',
   'home',
+  'shop-now',
   'product',
   'producer-shop',
   'producers-list',
@@ -228,6 +230,10 @@ function ProductDetail({ product, products = [], onViewProduct, onNavigate, curr
   }
 
   const base = full || product
+  const basePrice = Number(base?.price || 0)
+  const baseFreeShippingEligible = basePrice >= 500
+  const baseOfferPercent = basePrice >= 2000 ? 25 : basePrice >= 1000 ? 15 : basePrice >= 500 ? 10 : 0
+  const baseVoucherCode = baseOfferPercent > 0 ? 'SUMMER10' : null
   const sameProducer = (products || []).filter(p => p.id !== base.id && p.producer && p.producer === base.producer)
   const others = (products || []).filter(p => p.id !== base.id && !sameProducer.includes(p))
   const recommendations = [...sameProducer, ...others].slice(0, 4)
@@ -266,6 +272,19 @@ function ProductDetail({ product, products = [], onViewProduct, onNavigate, curr
             <span className="muted">{(full?.ratingCount||0) ? `${Number(full?.ratingAvg||0).toFixed(1)} • ${full?.ratingCount} ${full?.ratingCount > 1 ? t('reviews') : t('review')}` : t('noReviewsYet')}</span>
           </div>
           <div className="price">৳ {base.price}</div>
+          {(baseFreeShippingEligible || baseOfferPercent > 0 || baseVoucherCode) && (
+            <div className="product-benefits" aria-label="Benefits">
+              {baseOfferPercent > 0 && (
+                <span className="product-badge badge-offer">🏷️ -{baseOfferPercent}% Offer</span>
+              )}
+              {baseFreeShippingEligible && (
+                <span className="product-badge badge-shipping">🚚 Free Shipping</span>
+              )}
+              {baseVoucherCode && (
+                <span className="product-badge badge-voucher">🎟️ Voucher {baseVoucherCode}</span>
+              )}
+            </div>
+          )}
           {base.category && <div className="muted">{t('category')}: {base.category}</div>}
           {typeof full?.stock === 'number' && <div className="muted">{t('inStock')}: {full.stock}</div>}
           <p style={{ marginTop: '0.5rem' }}>{base.description || t('productDetails')}</p>
@@ -361,6 +380,7 @@ function App(){
     'login',
     'signup',
     'home',
+    'shop-now',
     'product',
     'producer-shop',
     'producers-list'
@@ -511,6 +531,7 @@ function App(){
       <CategoryPanel
         categories={categories}
         onSelect={setSelectedCategory}
+        selectedCategory={selectedCategory}
         priceFilter={priceFilter}
         onPriceChange={setPriceFilter}
         sortOption={sortOption}
@@ -520,7 +541,30 @@ function App(){
     )}
         <div className={`container ${!hideCategoryPanel && isCategoryPanelOpen ? 'with-category-panel' : ''}`}>
           {page === 'landing' && <Landing onNavigate={navigate} />}
-          {page === 'home' && <Home products={visibleProducts} onViewProduct={onViewProduct} currentUser={currentUser} />}
+          {page === 'home' && (
+            <Home
+              products={visibleProducts}
+              onViewProduct={onViewProduct}
+              currentUser={currentUser}
+              onSelectCategory={setSelectedCategory}
+              onSortChange={setSortOption}
+              onResetPrice={() => setPriceFilter({ min: '', max: '' })}
+              onResetSearch={() => setSearch('')}
+              onNavigate={navigate}
+            />
+          )}
+          {page === 'shop-now' && (
+            <ShopNow
+              products={visibleProducts}
+              onViewProduct={onViewProduct}
+              currentUser={currentUser}
+              onSelectCategory={setSelectedCategory}
+              onSortChange={setSortOption}
+              sortOption={sortOption}
+              onResetPrice={() => setPriceFilter({ min: '', max: '' })}
+              onResetSearch={() => setSearch('')}
+            />
+          )}
           {page === 'login' && <Login onSuccess={handleLoginSuccess} />}
           {page === 'signup' && <Signup onSuccess={handleSignupSuccess} />}
           {loading && <div className="muted">Loading…</div>}

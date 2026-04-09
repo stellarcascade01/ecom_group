@@ -36,6 +36,17 @@ export default function ProductCard({product, onView, currentUser, showReviews =
     setImageFailed(false)
   }, [imageSrc])
 
+  const price = Number(product?.price || 0)
+  const freeShippingEligible = price >= 500
+  const offerPercent = price >= 2000 ? 25 : price >= 1000 ? 15 : price >= 500 ? 10 : 0
+  const voucherCode = offerPercent > 0 ? 'SUMMER10' : null
+
+  const benefits = [
+    offerPercent > 0 ? { key: 'offer', label: `-${offerPercent}%` } : null,
+    freeShippingEligible ? { key: 'ship', label: 'Free Shipping' } : null,
+    voucherCode ? { key: 'voucher', label: `Voucher ${voucherCode}` } : null
+  ].filter(Boolean)
+
   return (
     <div
       className="product-card"
@@ -49,46 +60,70 @@ export default function ProductCard({product, onView, currentUser, showReviews =
         }
       }}
     >
-      {imageSrc && !imageFailed ? (
-        <img
-          src={imageSrc}
-          alt={product.name}
-          loading="lazy"
-          onError={() => setImageFailed(true)}
-        />
-      ) : (
-        <PlaceholderImage title={product.name || 'Product'} />
-      )}
+      <div className="product-media">
+        {imageSrc && !imageFailed ? (
+          <img
+            src={imageSrc}
+            alt={product.name}
+            loading="lazy"
+            onError={() => setImageFailed(true)}
+          />
+        ) : (
+          <PlaceholderImage title={product.name || 'Product'} />
+        )}
+
+        {offerPercent > 0 && (
+          <div className="product-discount" aria-label={`Discount ${offerPercent}%`}>-{offerPercent}%</div>
+        )}
+
+        <button
+          type="button"
+          className={`product-fav ${isFavorite(product.id) ? 'is-active' : ''}`}
+          aria-label={isFavorite(product.id) ? 'Remove from favorites' : 'Add to favorites'}
+          onClick={(e)=>{ e.stopPropagation(); toggle(product.id) }}
+        >
+          <HeartIcon size={18} filled={isFavorite(product.id)} />
+        </button>
+      </div>
       <div className="product-body">
         <h4>{product.name}</h4>
-        <p className="muted">{product.producer}</p>
+        {product.producer ? <p className="muted">{product.producer}</p> : null}
         {showReviews && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
+          <div className="product-rating-row">
             <StarRating value={Number(product.ratingAvg || 0)} readOnly size={16} />
             <span className="muted" style={{ fontSize: '0.9rem' }}>
               ({Number(product.ratingCount || 0)})
             </span>
           </div>
         )}
+
+        {benefits.length > 0 && (
+          <div className="product-benefit-row" aria-label="Benefits">
+            {benefits.map(b => (
+              <span
+                key={b.key}
+                className={`benefit-pill ${b.key === 'offer' ? 'is-offer' : ''}`}
+                title={b.label}
+              >
+                {b.label}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="meta">
-          <strong>৳ {product.price}</strong>
+          <div className="product-price">
+            <span className="price-current">৳ {price.toLocaleString()}</span>
+          </div>
           <div>
             {canShop && (
               <>
-                <button
-                  className={`icon-btn ${isFavorite(product.id) ? 'fav-active' : ''}`}
-                  aria-label={isFavorite(product.id) ? 'Remove from favorites' : 'Add to favorites'}
-                  onClick={(e)=>{ e.stopPropagation(); toggle(product.id) }}
-                >
-                  <HeartIcon size={18} filled={isFavorite(product.id)} />
-                </button>
                 <Button
                   size="sm"
                   onClick={(e)=>{ e.stopPropagation(); addItem(product, 1) }}
-                  style={{marginLeft:8}}
+                  className="add-to-cart-icon-btn"
                   aria-label="Add to cart"
                 >
-                  <CartIcon size={16} style={{ marginRight: 6, verticalAlign: 'text-bottom' }} />
+                  <CartIcon size={18} />
                 </Button>
               </>
             )}
