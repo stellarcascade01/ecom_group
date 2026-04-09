@@ -51,16 +51,21 @@ export default function Header({onNavigate, onSearch, searchQuery = '', user, on
 
   const isActivePage = (page) => currentPage === page
 
+  const handleBrandClick = () => {
+    onNavigate?.('home')
+    setUserMenuOpen(false)
+  }
+
   return (
     <header className="site-header">
       
       <nav>
-        <div className="brand brand-lockup">
+        <button type="button" className="brand brand-lockup brand-button" onClick={handleBrandClick} aria-label={t('nav.home') || 'Home'}>
           <span className="brand-mark" aria-hidden>
             <img className="brand-logo" src={logo} alt="" />
           </span>
           <span className="brand-text">{brandText}</span>
-        </div>
+        </button>
         <Button
           variant="link"
           className="nav-icon-btn"

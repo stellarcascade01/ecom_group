@@ -53,7 +53,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
           ? data.filter(p => producerKeys.includes(String(p?.producer || '').trim().toLowerCase()))
           : []
         setLiveCount(mine.length)
-      }catch(err){
+      }catch{
         if(active) setLiveCount(0)
       }
     }
@@ -476,7 +476,7 @@ export default function ProducerDashboard({ user, onNavigate, onUserUpdate, rout
         .pd-avatar-section { display: flex; gap: 1.5rem; align-items: center; flex: 1; min-width: 250px; }
         .pd-avatar-large { width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 2.5rem; font-weight: 800; flex-shrink: 0; }
         .pd-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
-        .pd-user-info h1 { margin: 0; font-size: 2rem; font-weight: 800; }
+        .pd-user-info h1 { margin: 0; font-size: 2.3rem; font-weight: 900; letter-spacing: 0.2px; }
         .pd-user-info p { margin: 0.3rem 0 0; opacity: 0.95; font-size: 0.95rem; }
         .pd-header-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
         .pd-container { max-width: 1400px; margin: 2rem auto; padding: 0 1rem; }

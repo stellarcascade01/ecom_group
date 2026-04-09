@@ -73,13 +73,32 @@ body{background:var(--bg); color:var(--text);}
   gap: 0; /* rely on space-evenly for spacing */
   width: 100%;
 }
-.site-header .brand{font-weight:800; font-size:1.6rem; letter-spacing:0.4px}
+.site-header .brand{font-weight:900; font-size:2rem; letter-spacing:0.2px}
+
+.site-header .brand-button{
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+}
+
+.site-header .brand-button:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(234,88,12,0.25);
+  border-radius: 6px;
+}
 
 .brand-lockup{
   display:inline-flex;
   align-items:center;
   gap:0.5rem;
   white-space:nowrap;
+}
+
+@media (max-width: 768px){
+  .site-header .brand{font-size:1.5rem}
 }
 
 .brand-mark{

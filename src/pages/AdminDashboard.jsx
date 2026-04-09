@@ -115,9 +115,11 @@ export default function AdminDashboard({ user, onNavigate }){
           letter-spacing: 0.4px;
         }
 
-        h1 {
+        .admin-dashboard h1 {
           margin: 0.1rem 0 0.5rem 0;
-          font-size: 2rem;
+          font-size: 2.6rem;
+          font-weight: 900;
+          letter-spacing: 0.2px;
         }
 
         .lead {
@@ -204,8 +206,8 @@ export default function AdminDashboard({ user, onNavigate }){
             text-align: center;
           }
 
-          h1 {
-            font-size: 1.5rem;
+          .admin-dashboard h1 {
+            font-size: 2rem;
           }
 
           .stats-grid {
